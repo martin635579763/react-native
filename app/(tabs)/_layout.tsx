@@ -1,35 +1,96 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useAuth, useOAuth, useUser } from '@clerk/clerk-expo';
+import { Image } from 'react-native';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
+  const { isSignedIn} = useAuth();
+  const { user } = useUser();
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: '#FF5A5F',
         headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
+        tabBarStyle: {
+          borderTopColor: '#ddd',
+          backgroundColor: '#fff',
+        },
+      }}
+    >
       <Tabs.Screen
         name="explore"
         options={{
           title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons 
+              name={focused ? "search" : "search-outline"} 
+              size={size} 
+              color={color} 
+            />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="wishlists"
+        options={{
+          title: 'Wishlists',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons 
+              name={focused ? "heart" : "heart-outline"} 
+              size={size} 
+              color={color} 
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="trips"
+        options={{
+          title: 'Trips',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons 
+              name={focused ? "airplane" : "airplane-outline"} 
+              size={size} 
+              color={color} 
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="inbox"
+        options={{
+          title: 'Inbox',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons 
+              name={focused ? "chatbubble" : "chatbubble-outline"} 
+              size={size} 
+              color={color} 
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, size, focused }) => 
+            isSignedIn && user?.imageUrl ? (
+              <Image
+                source={{ uri: user.imageUrl }}
+                style={{
+                  width: size,
+                  height: size,
+                  borderRadius: size / 2,
+                }}
+              />
+            ) : (
+              <Ionicons 
+                name={focused ? "person" : "person-outline"} 
+                size={size} 
+                color={color} 
+              />
+            )
         }}
       />
     </Tabs>
